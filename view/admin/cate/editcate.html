@@ -1,0 +1,62 @@
+{{extend '../layouts/layouts.html'}}
+
+{{block 'body'}}
+<div class="container-fluid">
+  <div class="page-title">
+    <h1>编辑栏目</h1>
+  </div>
+  <!-- 有错误信息时展示 -->
+  <!-- <div class="alert alert-danger">
+    <strong>错误！</strong>发生XXX错误
+  </div> -->
+  <div class="row">
+    <div class="col-md-4">
+      <form id="mainForm">
+        {{if code==201}}
+        <h2>{{message}}</h2>
+        {{/if}}
+        <div class="form-group">
+          <label for="name">名称</label>
+          <input name="idEdit" type="hidden" value="{{cate_id}}">
+          <input id="name" class="form-control" name="name" type="text" placeholder="分类名称" value="{{cate_name}}">
+        </div>
+        <div class="form-group">
+          <label for="icon">图标</label>
+          <input id="icon" class="form-control" name="icon" type="text" placeholder="图标" value="{{cate_icon}}">
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary editBtn" type="button">修改</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{{/block}}
+{{block 'js'}}
+<script>
+  // 后端渲染页面时直接通过get传参的id名，发送ajax请求，得到本条数据,如果获取成功就渲染到页面上，
+  // 如果失败，则不渲染数据，在上面提示获取失败。通过给editBtn添加点击事件发送ajax请求post，
+  // 使用jquery对象.serialize()方法获取所有表单数据，发送给后端,此时需要ID，因为后端修改时需要id
+  // ，所以需要设置一个type=hidden的标签记录id，url为 /admin/cate/modifycate，后端接收数据，
+  // 执行sql语句，如果修改失败，提示修改失败，仍留在当前页，修改成功跳转到cate页面
+  $('.editBtn').click(function(){
+    var data = $('#mainForm').serialize();
+    $.ajax({
+      url:'/admin/cate/modifycate',
+      type:'post',
+      data:data,
+      dataType:'json',
+      success:function(msg){
+        if(msg.code==201){
+          return layer.msg(msg.message,{icon:5,title:''});
+        }
+        layer.alert(msg.message,{icon:1,title:'',closeBtn: 0},function(){
+          location.href='/admin/cate/cate';
+        })
+      }
+    });
+  });
+
+</script>
+{{/block}}

@@ -1,0 +1,129 @@
+{{extend '../layouts/layouts.html'}}
+
+{{block 'body'}}
+
+<div class="container-fluid">
+    <div class="page-title">
+      <h1>图片轮播</h1>
+    </div>
+    <!-- 有错误信息时展示 -->
+    <!-- <div class="alert alert-danger">
+      <strong>错误！</strong>发生XXX错误
+    </div> -->
+    <div class="row">
+      <div class="col-md-4">
+        <form id="slides_form">
+          <h2>添加新轮播内容</h2>
+          <div class="form-group">
+            <label for="image">图片</label>
+            <!-- show when image chose -->
+            <img class="help-block thumbnail" style="display: none">
+            <input id="image" class="form-control" name="image" type="file">
+            <input id="image_hidden" name="image_hidden" type="hidden">
+          </div>
+          <div class="form-group">
+            <label for="text">文本</label>
+            <input id="text" class="form-control" name="text" type="text" placeholder="文本">
+          </div>
+          <div class="form-group">
+            <label for="link">链接</label>
+            <input id="link" class="form-control" name="link" type="text" placeholder="链接">
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" type="button">添加</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-8">
+        <div class="page-action">
+          <!-- show when multiple checked -->
+          <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
+        </div>
+        <table class="table table-striped table-bordered table-hover">
+          <thead>
+            <tr>
+              <th class="text-center" width="40"><input type="checkbox"></th>
+              <th class="text-center">图片</th>
+              <th>文本</th>
+              <th>链接</th>
+              <th class="text-center" width="100">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+           
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {{/block}}
+  {{block 'js'}}
+  <script type="html/text" id="slides_temp">
+  {#each data#}
+  <tr>
+      <td class="text-center"><input type="checkbox"></td>
+      <td class="text-center"><img class="slide" src="{#$value.pic_url#}"></td>
+      <td>{#$value.pic_text#}</td>
+      <td>{#$value.pic_link#}</td>
+      <td class="text-center">
+        <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+      </td>
+    </tr>
+  {#/each#}
+  </script>
+  <script type="html/text" id="slides_temp1">
+  <tr>
+    <td class="text-center"><input type="checkbox"></td>
+    <td class="text-center"><img class="slide" src="{#pic_url#}"></td>
+    <td>{#pic_text#}</td>
+    <td>{#pic_link#}</td>
+    <td class="text-center">
+      <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+    </td>
+  </tr> 
+  </script>
+  <script>
+    $.ajax({
+      url:'/api/other/slides',
+      type:'post',
+      dataType:'json',
+      success:function(msg){
+        var str = template('slides_temp',msg);
+        $('tbody').html(str);
+      }
+    });
+    $('#image').change(function(){
+      var formData = new FormData();
+      var fl = this.files[0];
+      formData.append('avatar',fl);
+      $.ajax({
+        url:'/api/uploads',
+        type:'post',
+        contentType:false,
+        processData:false,
+        data:formData,
+        dataType:'json',
+        success:function(msg){
+          layer.msg(msg.message)
+          $('.thumbnail').attr('src',msg.path).show;
+          $('#image_hidden').prop('value',msg.path);
+        }
+      })
+    });
+    $('.btn-primary').click(function(){
+      $.ajax({
+        url:' /admin/other/addSildes',
+        type:'post',
+        data: $('#slides_form').serialize(),
+        dataType:'json',
+        success:function(msg){
+          var str1 = template('slides_temp1',msg.data);
+          $('tbody').append(str1);
+          $('.thumbnail').hide();
+          $('#slides_form')[0].reset();
+        }
+      })
+    })
+  </script>
+  {{/block}}

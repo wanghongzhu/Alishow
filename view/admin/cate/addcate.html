@@ -1,0 +1,58 @@
+{{extend '../layouts/layouts.html'}}
+
+{{block 'body'}}
+<div class="container-fluid">
+  <div class="page-title">
+    <h1>添加栏目</h1>
+  </div>
+  <!-- 有错误信息时展示 -->
+  <!-- <div class="alert alert-danger">
+    <strong>错误！</strong>发生XXX错误
+  </div> -->
+  <div class="row">
+    <div class="col-md-4">
+      <form action="/admin/cate/addCateDeal" method="post">
+        <h2>添加新栏目</h2>
+        <div class="form-group">
+          <label for="name">名称</label>
+          <input id="name" class="form-control" name="name" type="text" placeholder="分类名称">
+        </div>
+        <div class="form-group">
+          <label for="icon">图标</label>
+          <input id="icon" class="form-control" name="icon" type="text" placeholder="图标">
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" type="submit">添加</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{{/block}}
+{{block 'js'}}
+<script>
+// 提交事件submit触发ajax,post方式,使用$('#mainForm').serialize()方式将表单数据提交给后端，
+// 提交成功跳转到admin/index,或者重置当前表单$('#mainForm')[0].reset()。后端使用mysql语句处理接收的表单数据。
+// $('.btn-primary').click(function(){
+  // 此处缺少验证，当填入数据为空的时候。
+//   const data = $('form').serialize();
+//     $.ajax({
+//       url:'/admin/cate/addCateDeal',
+//       type:'post',
+//       dataType:'json',
+//       data:data,
+//       success:function(msg){
+//         if(msg.code==201){
+//           $('form')[0].reset();
+//           layer.msg(msg.message,{icon:0,title:''});
+//         }
+//         layer.alert('添加成功', {title:'',closeBtn :0,}, 
+//           function(){
+//             location.href ='/admin/cate/cate';
+//           })
+//       }
+//   }); 
+// });
+</script>
+{{/block}}

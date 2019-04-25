@@ -1,0 +1,103 @@
+{{extend '../layouts/layouts.html'}}
+{{block 'body'}}
+<div class="container-fluid">
+  <div class="page-title">
+    <h1>分类目录</h1>
+  </div>
+  <!-- 有错误信息时展示 -->
+  <!-- <div class="alert alert-danger">
+    <strong>错误！</strong>发生XXX错误
+  </div> -->
+  <div class="row">
+
+    <div class="col-md-8">
+      <div class="page-action">
+        <!-- show when multiple checked -->
+        <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
+      </div>
+      <table class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+            <th class="text-center" width="40"><input type="checkbox"></th>
+            <th>栏目名称</th>
+            <th>栏目图标</th>
+            <th>创建时间</th> 
+            <th class="text-center" width="100">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+         
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{{/block}}
+{{block 'js'}}
+<!-- <script src="/assets/vendors/art-template/template-web.js"></script> -->
+<script type="text/html" id="temp2">
+  {#if code==201#}
+    <tr >
+      <td class="text-center" colspan="5">{#message#}</td>
+    </tr>
+  {#else#}
+  {#each data#}
+  <tr>
+      <td class="text-center"><input type="checkbox"></td>
+      <td>{#$value.cate_name#}</td>
+      <td>{#$value.cate_icon#}</td>
+      <td>{#$value.cate_addtime#}</td>
+      <td class="text-center">
+        <a href="/admin/cate/editcate?id={#$value.cate_id#}" class="btn btn-info btn-xs">编辑</a>
+        <a href="javascript:;" class="btn btn-danger btn-xs del" data="{#$value.cate_id#}">删除</a>
+      </td>
+    </tr>
+  {#/each#}
+  {#/if#}
+</script>
+<script>
+  // 页面载入事件
+  template.defaults.rules[1].test = /{#([@#]?)[ \t]*(\/?)([\w\W]*?)[ \t]*#}/;
+  $.ajax({
+    url:'/admin/cate/getCate',
+    cache:false,//get方式ie不缓存
+    success:function(msg){
+      console.log(msg)
+      if(msg.code==201){
+        return layer.msg(msg.message,{icon:5,title:''}); 
+      }
+      var str = template('temp2',msg);
+      $('tbody').html(str);
+    }
+  })
+
+  // 给删除按钮添加点击事件，需要用事件委托。触发ajax请求,url=/admin/cate/delcate，在a标签上自定义添加一个data属性，
+  // 记录当前数据的id,并一起发送给后端，后端执行sql语句，从数据库中删除数据，
+  // 如果失败或者影响行不为1，将结果对象返回前端，前端提示删除失败，如果成功，
+  // 返回前端对象，提示删除成功，并将DOM元素同时删除。
+  $('tbody').on('click','.del',function(){
+    var datai =$(this).attr('data'); 
+    var _this = $(this);
+    layer.confirm('您确定要删除吗？', 
+          { btn: ['确定','取消'],title:'',closeBtn :0,anim: 6}, 
+          function(){
+            $.ajax({
+              url:'/admin/cate/delcate',
+              type:'get',
+              data:{delId:datai},
+              cache:false,
+              dataType:'json',
+              success:function(msg){
+                if(msg.code==201){
+                  return layer.msg(msg.message,{icon:5,title:''});
+                }
+                // $(this)指向ajax
+                _this.parent().parent().remove();
+                layer.msg(msg.message,{icon:1,title:''});
+              }
+            })
+          }); 
+  });
+</script>
+{{/block}}

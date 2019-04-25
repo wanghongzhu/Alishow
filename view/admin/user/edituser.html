@@ -1,0 +1,103 @@
+
+<link rel="stylesheet" href="/assets/vendors/bootstrap/css/bootstrap.css">
+<link rel="stylesheet" href="/assets/vendors/font-awesome/css/font-awesome.css">
+<link rel="stylesheet" href="/assets/vendors/nprogress/nprogress.css">
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="stylesheet" href="/assets/vendors/layui-v2.4.5/layui/css/layui.css">
+<script src="/assets/vendors/nprogress/nprogress.js"></script>
+<style>
+  .error {
+    color: red;
+  }
+</style>
+
+<div class="container-fluid">
+  
+  <!-- 有错误信息时展示 -->
+  <!-- <div class="alert alert-danger">
+    <strong>错误！</strong>发生XXX错误
+  </div> -->
+  <div class="row">
+    <div class="col-md-4">
+      <form id="mainform">
+        <h2>修改用户</h2>
+        <div class="form-group">
+          <label for="email">邮箱</label>
+          <input id="email" class="form-control" name="email" type="text" placeholder="邮箱" value="{{admin_email}}">
+          <input type="hidden" value="{{admin_id}}" name="id">
+        </div>
+        <div class="form-group">
+          <label for="nickname">昵称</label>
+          <input id="nickname" class="form-control" name="nickname" type="text" placeholder="昵称" value="{{admin_nickname}}">
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input id="password" class="form-control" name="password" type="text" placeholder="密码" value="{{admin_pwd}}">
+        </div>
+        <div class="form-group">
+            <label for="tel">电话</label>
+            <input  class="form-control" name="tel" type="text" placeholder="电话号码" value="{{admin_tel}}">
+        </div>
+        <div class="form-group">
+            <label for="gender">性别</label>
+            {{if admin_gender=='男'}}
+            <input  name="gender" type="radio" checked="checked">男
+            <input  name="gender" type="radio">女
+            {{else}}
+            <input  name="gender" type="radio">男
+            <input  name="gender" type="radio" checked="checked">女
+            {{/if}} 
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" type="submit">修改</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script src="/assets/vendors/jquery/jquery.js"></script>
+<script src="/assets/vendors/jquery-validation-1.19.0/dist/jquery.validate.js"></script>
+<script src="/assets/vendors/bootstrap/js/bootstrap.js"></script>
+<script src="/assets/vendors/layui-v2.4.5/layui/layui.all.js"></script>
+<script>
+     // 表单验证
+  $('#mainform').validate({
+     rules:{
+      email:{
+        required: true,   
+        maxlength: 20,    
+        minlength: 6, 
+      },
+      nickname:{
+        required: true,   
+        maxlength: 16,    
+        minlength: 2, 
+      },
+      password:{
+        required: true,  
+        digits: true,    //必须为纯数字
+        rangelength: [5, 10], //长度必须在5-10之间
+      },
+      tel:{
+          required:true,
+          digits:true,
+          rangelength: [11, 11],
+      }
+     },
+     messages:{
+      email:{
+        required: '邮箱为必填项',   
+        maxlength: '最长不超过20位',    
+        minlength: '最短不少于6位', 
+      },
+      nickname:{
+        required: '昵称为必填项',   
+        maxlength: '最长不超过16位',    
+        minlength: '最短不少于2位', 
+      },
+      password:{
+        required: '密码为必填项',  
+        digits: '密码必须为纯数字',    //必须为纯数字
+        rangelength: '密码长度在5
